@@ -1,0 +1,410 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><%= title %></h4>
+                </div>
+                <div class="card-body">
+                    <form action="<%= product ? '/admin/product/edit/' + product.id : '/admin/product/add' %>" method="POST" enctype="multipart/form-data">
+                        
+                        <ul class="nav nav-tabs mb-3" id="langTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="zh-tab" data-bs-toggle="tab" data-bs-target="#zh-pane" type="button" role="tab">中文内容</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="en-tab" data-bs-toggle="tab" data-bs-target="#en-pane" type="button" role="tab">English Content</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content mb-4" id="langTabContent">
+                            <!-- Chinese Tab -->
+                            <div class="tab-pane fade show active" id="zh-pane" role="tabpanel">
+                                <div class="mb-3">
+                                    <label class="form-label">产品名称 (中文)</label>
+                                    <input type="text" name="name" class="form-control" value="<%= product ? product.name : '' %>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">产品分类 (中文)</label>
+                                    <select name="category" class="form-select" required>
+                                        <option value="" <%= product && product.category ? '' : 'selected' %> disabled>请选择分类</option>
+                                        <% if (categories && categories.length > 0) { %>
+                                            <% categories.forEach(function(cat) { %>
+                                                <option value="<%= cat.name %>" <%= product && product.category === cat.name ? 'selected' : '' %>><%= cat.name %></option>
+                                            <% }); %>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">产品描述 (中文)</label>
+                                    <div class="btn-toolbar mb-2" role="toolbar">
+                                        <div class="btn-group me-2" role="group">
+                                            <button type="button" class="btn btn-outline-secondary" data-cmd="bold">加粗</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-cmd="italic">斜体</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-cmd="underline">下划线</button>
+                                        </div>
+                                        <div class="btn-group me-2" role="group">
+                                            <button type="button" class="btn btn-outline-secondary" data-cmd="insertUnorderedList">无序列表</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-cmd="insertOrderedList">有序列表</button>
+                                        </div>
+                                        <div class="btn-group me-2" role="group">
+                                            <button type="button" class="btn btn-outline-secondary" data-format="h2">小标题</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-format="p">正文</button>
+                                        </div>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-secondary" id="createLinkBtn">插入链接</button>
+                                            <button type="button" class="btn btn-outline-secondary" id="clearFormatBtn">清除格式</button>
+                                        </div>
+                                    </div>
+                                    <div id="zhDescEditor" class="form-control" style="min-height:180px;" contenteditable="true"><%- product ? (product.description || '') : '' %></div>
+                                    <textarea name="description" id="zhDescTextarea" class="form-control d-none"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">技术特点 (中文)</label>
+                                    <div id="zhFeaturesToolbar" class="btn-toolbar mb-2" role="toolbar">
+                                        <div class="btn-group me-2" role="group">
+                                            <button type="button" class="btn btn-outline-secondary" data-cmd="bold">加粗</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-cmd="italic">斜体</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-cmd="underline">下划线</button>
+                                        </div>
+                                        <div class="btn-group me-2" role="group">
+                                            <button type="button" class="btn btn-outline-secondary" data-cmd="insertUnorderedList">无序列表</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-cmd="insertOrderedList">有序列表</button>
+                                        </div>
+                                        <div class="btn-group me-2" role="group">
+                                            <button type="button" class="btn btn-outline-secondary" data-format="h3">小标题</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-format="p">正文</button>
+                                        </div>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-secondary" id="createLinkBtnFeatures">插入链接</button>
+                                            <button type="button" class="btn btn-outline-secondary" id="clearFormatBtnFeatures">清除格式</button>
+                                        </div>
+                                    </div>
+                                    <div id="zhFeaturesEditor" class="form-control" style="min-height:160px;" contenteditable="true"><%- product ? (product.features || '') : '' %></div>
+                                    <textarea name="features" id="zhFeaturesTextarea" class="form-control d-none"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- English Tab -->
+                            <div class="tab-pane fade" id="en-pane" role="tabpanel">
+                                <div class="mb-3">
+                                    <label class="form-label">Product Name (English)</label>
+                                    <input type="text" name="name_en" class="form-control" value="<%= product ? product.name_en : '' %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Category (English)</label>
+                                    <select name="category_en" class="form-select">
+                                        <option value="" <%= product && product.category_en ? '' : 'selected' %> >Select Category</option>
+                                        <% if (categories && categories.length > 0) { %>
+                                            <% categories.forEach(function(cat) { %>
+                                                <option value="<%= cat.name_en %>" <%= product && product.category_en === cat.name_en ? 'selected' : '' %>><%= cat.name_en %></option>
+                                            <% }); %>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Description (English)</label>
+                                    <textarea name="description_en" class="form-control" rows="4"><%= product ? product.description_en : '' %></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Features (English - New line separated)</label>
+                                    <textarea name="features_en" class="form-control" rows="4"><%= product ? product.features_en : '' %></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+
+                        <hr>
+                        <h5 class="mb-3">媒体文件</h5>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">产品主图（单张）</label>
+                                    <input type="file" name="image" class="form-control" accept="image/*">
+                                    <div id="mainPhotosPreview" class="d-flex flex-wrap gap-2 mt-2"></div>
+                                    <% if (typeof mainImages !== 'undefined' && mainImages.length > 0) { %>
+                                        <div class="d-flex flex-wrap gap-3 mt-2">
+                                            <% mainImages.forEach(function(img) { %>
+                                                <div class="text-center">
+                                                    <img src="<%= img.image %>" alt="main" style="width: 120px; height: 80px; object-fit: cover;">
+                                                    <div>
+                                                        <a href="/admin/product/image/delete/<%= img.id %>" class="btn btn-sm btn-outline-danger mt-1" onclick="return confirm('确定删除该主图？')">删除</a>
+                                                    </div>
+                                                </div>
+                                            <% }); %>
+                                        </div>
+                                    <% } else if (product && product.image) { %>
+                                        <div class="mt-2">
+                                            <img src="<%= product.image %>" alt="Current Image" style="width: 120px; height: 80px; object-fit: cover;">
+                                        </div>
+                                    <% } %>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">产品视频</label>
+                                    <% if (product && product.video) { %>
+                                        <div class="mb-2">
+                                            <video src="<%= product.video %>" style="width: 150px; height: auto;" controls></video>
+                                        </div>
+                                    <% } %>
+                                    <input type="file" name="video" class="form-control" accept="video/*">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label">视频链接（外部平台）</label>
+                                    <input type="url" name="video_url" class="form-control" placeholder="https://..." value="<%= product && product.video_url ? product.video_url : '' %>">
+                                    <small class="text-muted">支持 YouTube、Vimeo 等平台的公开视频链接。填写后优先播放外部链接。</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label">产品相册（可多张）</label>
+                                    <input type="file" name="gallery" class="form-control" accept="image/*" multiple>
+                                </div>
+                                <% if (typeof galleryImages !== 'undefined' && galleryImages.length > 0) { %>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <% galleryImages.forEach(function(img) { %>
+                                            <div class="text-center">
+                                                <img src="<%= img.image %>" alt="gallery" style="width: 120px; height: 80px; object-fit: cover;">
+                                                <div>
+                                                    <a href="/admin/product/image/delete/<%= img.id %>" class="btn btn-sm btn-outline-danger mt-1" onclick="return confirm('确定删除该图片？')">删除</a>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <h5 class="mb-3">实时预览</h5>
+                                <div class="card shadow-sm">
+                                    <div id="previewImageContainer" class="bg-light d-flex align-items-center justify-content-center" style="height: 240px; overflow: hidden; cursor: pointer; position: relative;">
+                                        <% if (product && product.image) { %>
+                                            <img id="previewImage" src="<%= product.image %>" style="max-height: 100%; width: auto;">
+                                        <% } else { %>
+                                            <img id="previewImage" src="" style="max-height: 100%; width: auto; display: none;">
+                                            <i class="fas fa-image fa-3x text-muted" id="previewImagePlaceholder"></i>
+                                        <% } %>
+                                        <button id="previewPrevBtn" type="button" class="btn btn-light" style="position:absolute; left:10px; top:50%; transform:translateY(-50%);">‹</button>
+                                        <button id="previewNextBtn" type="button" class="btn btn-light" style="position:absolute; right:10px; top:50%; transform:translateY(-50%);">›</button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h5 id="previewName" class="card-title mb-0"><%= product ? (product.name || '') : '' %></h5>
+                                            <span id="previewCategory" class="badge bg-info text-dark"><%= product ? (product.category || '') : '' %></span>
+                                        </div>
+                                        <% var __d0 = product ? (product.description || '') : ''; var __d1 = __d0.replace(/<[^>]*>/g, ''); var __d2 = (__d1.length > 100 ? (__d1.substring(0, 100) + '...') : __d1); %>
+                                        <p id="previewDesc" class="card-text text-muted"><%= __d2 %></p>
+                                        <div id="previewFeatures" class="small text-muted"></div>
+                                        <div id="previewGallery" class="d-flex flex-wrap gap-2 mt-2"></div>
+                                        <div id="previewAllMainThumbs" class="d-flex flex-wrap gap-2 mt-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">保存</button>
+                            <a href="/admin/dashboard" class="btn btn-secondary">取消</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+  const editor = document.getElementById('zhDescEditor');
+  const textarea = document.getElementById('zhDescTextarea');
+  const toolbar = document.querySelectorAll('[data-cmd]');
+  const formatBtns = document.querySelectorAll('[data-format]');
+  const linkBtn = document.getElementById('createLinkBtn');
+  const clearBtn = document.getElementById('clearFormatBtn');
+  toolbar.forEach(b => b.addEventListener('click', () => document.execCommand(b.getAttribute('data-cmd'), false, null)));
+  formatBtns.forEach(b => b.addEventListener('click', () => document.execCommand('formatBlock', false, b.getAttribute('data-format'))));
+  linkBtn.addEventListener('click', () => {
+    const url = prompt('请输入链接地址');
+    if (url) document.execCommand('createLink', false, url);
+  });
+  clearBtn.addEventListener('click', () => document.execCommand('removeFormat', false, null));
+  document.querySelector('form').addEventListener('submit', (e) => {
+    textarea.value = editor.innerHTML;
+  });
+  
+  
+
+  const featuresEditor = document.getElementById('zhFeaturesEditor');
+  const featuresTextarea = document.getElementById('zhFeaturesTextarea');
+  const linkBtnF = document.getElementById('createLinkBtnFeatures');
+  const clearBtnF = document.getElementById('clearFormatBtnFeatures');
+  document.getElementById('zhFeaturesToolbar').querySelectorAll('[data-cmd]').forEach(b => b.addEventListener('click', () => document.execCommand(b.getAttribute('data-cmd'), false, null)));
+  document.getElementById('zhFeaturesToolbar').querySelectorAll('[data-format]').forEach(b => b.addEventListener('click', () => document.execCommand('formatBlock', false, b.getAttribute('data-format'))));
+  linkBtnF.addEventListener('click', () => {
+    const url = prompt('请输入链接地址');
+    if (url) document.execCommand('createLink', false, url);
+  });
+  clearBtnF.addEventListener('click', () => document.execCommand('removeFormat', false, null));
+  document.querySelector('form').addEventListener('submit', (e) => {
+    featuresTextarea.value = featuresEditor.innerHTML;
+    const btn = e.target.querySelector('button[type="submit"]');
+    if(btn) {
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 上传中...';
+        btn.style.opacity = '0.8';
+        btn.style.cursor = 'not-allowed';
+    }
+  });
+})();
+
+(() => {
+  const nameInput = document.querySelector('input[name="name"]');
+  const catSelect = document.querySelector('select[name="category"]');
+  const mainImageInput = document.querySelector('input[name="image"]');
+  const galleryInput = document.querySelector('input[name="gallery"]');
+  const previewImage = document.getElementById('previewImage');
+  const previewImagePlaceholder = document.getElementById('previewImagePlaceholder');
+  const previewName = document.getElementById('previewName');
+  const previewCategory = document.getElementById('previewCategory');
+  const previewDesc = document.getElementById('previewDesc');
+  const previewFeatures = document.getElementById('previewFeatures');
+  const previewGallery = document.getElementById('previewGallery');
+  const previewMainPhotos = document.getElementById('mainPhotosPreview');
+  const previewAllMainThumbs = document.getElementById('previewAllMainThumbs');
+  const previewPrevBtn = document.getElementById('previewPrevBtn');
+  const previewNextBtn = document.getElementById('previewNextBtn');
+  const previewImageContainer = document.getElementById('previewImageContainer');
+  const existingMainImages = <%- JSON.stringify((typeof mainImages !== 'undefined' ? mainImages.map(i => i.image) : []).concat(product && product.image ? [product.image] : [])) %>;
+  const dedupe = (arr) => Array.from(new Set((arr || []).filter(Boolean)));
+  let carouselItems = dedupe(existingMainImages.slice());
+  let currentIdx = 0;
+  function renderPreviewImage() {
+    const src = carouselItems[currentIdx] || '';
+    if (src) {
+      previewImage.src = src;
+      previewImage.style.display = 'block';
+      if (previewImagePlaceholder) previewImagePlaceholder.style.display = 'none';
+    }
+    if (previewPrevBtn) previewPrevBtn.style.display = carouselItems.length > 1 ? 'inline-block' : 'none';
+    if (previewNextBtn) previewNextBtn.style.display = carouselItems.length > 1 ? 'inline-block' : 'none';
+  }
+  function renderThumbs() {
+    if (!previewAllMainThumbs) return;
+    previewAllMainThumbs.innerHTML = '';
+    carouselItems.forEach((src, idx) => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.style.width = '60px';
+      img.style.height = '45px';
+      img.style.objectFit = 'cover';
+      img.className = 'rounded border';
+      img.style.cursor = 'pointer';
+      if (idx === currentIdx) {
+        img.style.borderColor = '#0d6efd';
+        img.style.boxShadow = '0 0 0 2px rgba(13,110,253,.25)';
+      }
+      img.dataset.idx = String(idx);
+      previewAllMainThumbs.appendChild(img);
+    });
+  }
+  previewAllMainThumbs && previewAllMainThumbs.addEventListener('click', (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLElement)) return;
+    const s = t.dataset.idx;
+    if (!s) return;
+    currentIdx = parseInt(s);
+    renderPreviewImage();
+  });
+  previewPrevBtn && previewPrevBtn.addEventListener('click', () => {
+    if (carouselItems.length === 0) return;
+    currentIdx = (currentIdx - 1 + carouselItems.length) % carouselItems.length;
+    renderPreviewImage();
+  });
+  previewNextBtn && previewNextBtn.addEventListener('click', () => {
+    if (carouselItems.length === 0) return;
+    currentIdx = (currentIdx + 1) % carouselItems.length;
+    renderPreviewImage();
+  });
+  renderThumbs();
+  renderPreviewImage();
+  
+  const strip = (s) => (s || '').replace(/<[^>]*>/g, '');
+  const trunc = (s, n) => {
+    const t = s || '';
+    return t.length > n ? (t.substring(0, n) + '...') : t;
+  };
+  nameInput && nameInput.addEventListener('input', () => { previewName.textContent = nameInput.value || ''; });
+  catSelect && catSelect.addEventListener('change', () => { previewCategory.textContent = catSelect.value || ''; });
+  const descEditor = document.getElementById('zhDescEditor');
+  descEditor && descEditor.addEventListener('input', () => { previewDesc.textContent = trunc(strip(descEditor.innerHTML), 100); });
+  const featuresEditorEl = document.getElementById('zhFeaturesEditor');
+  if (featuresEditorEl) {
+    featuresEditorEl.addEventListener('input', () => { previewFeatures.textContent = trunc(strip(featuresEditorEl.innerHTML), 150); });
+  } else {
+    const featuresTextareaEl = document.querySelector('textarea[name="features"]');
+    featuresTextareaEl && featuresTextareaEl.addEventListener('input', () => { previewFeatures.textContent = trunc(strip(featuresTextareaEl.value), 150); });
+  }
+  mainImageInput && mainImageInput.addEventListener('change', () => {
+    previewMainPhotos && (previewMainPhotos.innerHTML = '');
+    const files = Array.from(mainImageInput.files || []);
+    files.forEach((f, idx) => {
+      const r = new FileReader();
+      r.onload = () => {
+        if (idx === 0) {
+          previewImage.src = r.result;
+          previewImage.style.display = 'block';
+          if (previewImagePlaceholder) previewImagePlaceholder.style.display = 'none';
+        }
+        const img = document.createElement('img');
+        img.src = r.result;
+        img.style.width = '80px';
+        img.style.height = '60px';
+        img.style.objectFit = 'cover';
+        img.className = 'rounded border';
+        previewMainPhotos && previewMainPhotos.appendChild(img);
+        if (!carouselItems.includes(r.result)) {
+          carouselItems.push(r.result);
+        }
+        renderThumbs();
+      };
+      r.readAsDataURL(f);
+    });
+  });
+  galleryInput && galleryInput.addEventListener('change', () => {
+    previewGallery.innerHTML = '';
+    const files = Array.from(galleryInput.files || []);
+    files.forEach(f => {
+      const r = new FileReader();
+      r.onload = () => {
+        const img = document.createElement('img');
+        img.src = r.result;
+        img.style.width = '80px';
+        img.style.height = '60px';
+        img.style.objectFit = 'cover';
+        img.className = 'rounded border';
+        previewGallery.appendChild(img);
+      };
+      r.readAsDataURL(f);
+    });
+  });
+})();
+</script>
+
+<%- include('../partials/footer') %>

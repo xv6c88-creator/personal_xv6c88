@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="<%= lang === 'zh' ? 'zh-CN' : lang %>" dir="<%= lang === 'ar' ? 'rtl' : 'ltr' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - <%= t.siteName %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-cogs me-2"></i><%= t.siteName %>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="/"><%= t.home %></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/products"><%= t.products %></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/services"><%= t.services %></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about"><%= t.about %></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact"><%= t.contact %></a></li>
+
+                    <% if (isAuthenticated) { %>
+                        <li class="nav-item"><a class="nav-link text-warning" href="/admin/dashboard"><%= t.admin %></a></li>
+                        <li class="nav-item"><a class="nav-link" href="/admin/logout"><%= t.logout %></a></li>
+                    <% } else { %>
+                        <li class="nav-item"><a class="nav-link" href="/admin/login"><i class="fas fa-lock"></i></a></li>
+                    <% } %>
+
+                    <!-- Language Switcher with Globe Icon -->
+                    <li class="nav-item dropdown ms-3">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-globe me-1"></i>
+                            <span><%= ({ zh: '语言', en: 'Language', fr: 'Langue', de: 'Sprache', it: 'Lingua', es: 'Idioma', ru: 'Язык', ar: 'اللغة' })[lang] || 'Language' %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item <%= lang === 'zh' ? 'active' : '' %>" href="?lang=zh">中文 (CN)</a></li>
+                            <li><a class="dropdown-item <%= lang === 'en' ? 'active' : '' %>" href="?lang=en">English (EN)</a></li>
+                            <li><a class="dropdown-item <%= lang === 'fr' ? 'active' : '' %>" href="?lang=fr">Français (FR)</a></li>
+                            <li><a class="dropdown-item <%= lang === 'de' ? 'active' : '' %>" href="?lang=de">Deutsch (DE)</a></li>
+                            <li><a class="dropdown-item <%= lang === 'it' ? 'active' : '' %>" href="?lang=it">Italiano (IT)</a></li>
+                            <li><a class="dropdown-item <%= lang === 'es' ? 'active' : '' %>" href="?lang=es">Español (ES)</a></li>
+                            <li><a class="dropdown-item <%= lang === 'ru' ? 'active' : '' %>" href="?lang=ru">Русский (RU)</a></li>
+                            <li><a class="dropdown-item <%= lang === 'ar' ? 'active' : '' %>" href="?lang=ar">العربية (AR)</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="min-vh-100">

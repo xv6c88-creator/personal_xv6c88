@@ -1,0 +1,141 @@
+<%- include('partials/header') %>
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/"><%= t.home %></a></li>
+            <li class="breadcrumb-item"><a href="/products"><%= t.products %></a></li>
+            <li class="breadcrumb-item active" aria-current="page"><%= l(product, 'name') %></li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <!-- Image -->
+            <% var displayMain = product.image || ((typeof mainImages !== 'undefined' && mainImages.length > 0) ? mainImages[0].image : ''); %>
+            <div class="border rounded p-2 bg-light d-flex align-items-center justify-content-center mb-3" style="height: 400px; overflow: hidden; position: relative;">
+                <% if(displayMain) { %>
+                    <img id="mainPhoto" src="<%= displayMain %>" class="img-fluid" alt="<%= l(product, 'name') %>" style="max-height: 100%;">
+                <% } else { %>
+                    <i class="fas fa-image fa-5x text-muted"></i>
+                <% } %>
+                <button id="btnPrev" type="button" class="btn btn-light" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); border-radius: 50%; width: 36px; height: 36px; align-items: center; justify-content: center;">‹</button>
+                <button id="btnNext" type="button" class="btn btn-light" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border-radius: 50%; width: 36px; height: 36px; align-items: center; justify-content: center;">›</button>
+            </div>
+            <% if (typeof mainImages !== 'undefined' && mainImages.length > 0) { %>
+                <div class="d-flex flex-wrap gap-2">
+                    <% mainImages.forEach(function(img) { %>
+                        <img src="<%= img.image %>" data-src="<%= img.image %>" style="width: 90px; height: 70px; object-fit: cover; cursor: pointer;" class="rounded border main-thumb">
+                    <% }); %>
+                </div>
+            <% } %>
+
+            
+
+            
+        </div>
+
+        <div class="col-md-6">
+            <h1 class="mb-3"><%= l(product, 'name') %></h1>
+            <span class="badge bg-primary mb-3"><%= l(product, 'category') %></span>
+            
+            <h4 class="mt-4"><%= t.productDesc %></h4>
+            <div class="lead text-muted"><%- l(product, 'description') %></div>
+
+            <h4 class="mt-4"><%= t.techFeatures %></h4>
+            <div class="bg-light p-3 rounded">
+                <div><%- l(product, 'features') || t.noFeatures %></div>
+            </div>
+
+            
+
+            <div class="mt-5">
+                <a href="/contact" class="btn btn-warning btn-lg w-100"><i class="fas fa-envelope me-2"></i><%= t.consultProduct %></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% if (product.video_url || product.video) { %>
+    <div class="container">
+        <div class="mt-5">
+            <h5 class="text-center"><i class="fas fa-video me-2"></i><%= t.productVideo %></h5>
+            <div class="d-flex justify-content-center">
+                <div class="ratio ratio-16x9" style="max-width: 800px; width: 100%;">
+                    <% if (product.video_url) { 
+                        var url = product.video_url;
+                        var embed = url;
+                        if (url.includes('youtu.be/')) {
+                            embed = 'https://www.youtube.com/embed/' + url.split('youtu.be/')[1].split('?')[0];
+                        } else if (url.includes('youtube.com/watch')) {
+                            var parts = url.split('v=');
+                            var vid = parts[1] ? parts[1].split('&')[0] : '';
+                            embed = 'https://www.youtube.com/embed/' + vid;
+                        } else if (url.includes('vimeo.com/')) {
+                            embed = 'https://player.vimeo.com/video/' + url.split('vimeo.com/')[1].split('?')[0];
+                        }
+                    %>
+                        <iframe src="<%= embed %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <% } else { %>
+                        <video controls>
+                            <source src="<%= product.video %>" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>
+
+<% if (typeof galleryImages !== 'undefined' && galleryImages.length > 0) { %>
+    <div class="container">
+        <div class="mt-4">
+            <div class="d-flex flex-column align-items-center gap-4">
+                <% galleryImages.forEach(function(img) { %>
+                    <img src="<%= img.image %>" alt="photo" style="max-width: 800px; width: 100%; height: auto;" class="rounded border">
+                <% }); %>
+            </div>
+        </div>
+    </div>
+<% } %>
+<script>
+(function(){
+  var main = document.getElementById('mainPhoto');
+  var thumbs = document.querySelectorAll('.main-thumb');
+  var list = Array.from(thumbs).map(function(el){ return el.getAttribute('data-src') || el.src; });
+  var idx = 0;
+  if (main && main.getAttribute('src')) {
+    var initial = main.getAttribute('src');
+    var i0 = list.indexOf(initial);
+    if (i0 >= 0) idx = i0;
+  }
+  thumbs.forEach(function(el, i){
+    el.addEventListener('click', function(){
+      var src = el.getAttribute('data-src') || el.src;
+      if (main && src) {
+        main.src = src;
+        main.style.display = 'block';
+        idx = i;
+      }
+    });
+  });
+  var prev = document.getElementById('btnPrev');
+  var next = document.getElementById('btnNext');
+  function show(n){
+    if (!main || list.length === 0) return;
+    idx = (n + list.length) % list.length;
+    main.src = list[idx];
+    main.style.display = 'block';
+  }
+  if (list.length <= 1) {
+    prev && (prev.style.display = 'none');
+    next && (next.style.display = 'none');
+  } else {
+    prev && prev.addEventListener('click', function(){ show(idx - 1); });
+    next && next.addEventListener('click', function(){ show(idx + 1); });
+  }
+})();
+</script>
+
+<%- include('partials/footer') %>

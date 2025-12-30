@@ -1,0 +1,85 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="list-group">
+                <a href="/admin/dashboard" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tachometer-alt me-2"></i>仪表盘
+                </a>
+                <a href="/admin/categories" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tags me-2"></i>分类管理
+                </a>
+                <a href="/admin/contact" class="list-group-item list-group-item-action">
+                    <i class="fas fa-address-card me-2"></i>联系方式
+                </a>
+                <a href="/admin/carousel" class="list-group-item list-group-item list-group-item-action">
+                    <i class="fas fa-images me-2"></i>首页轮播
+                </a>
+                <a href="/admin/about" class="list-group-item list-group-item-action">
+                    <i class="fas fa-info-circle me-2"></i>关于我们
+                </a>
+                <a href="/admin/services" class="list-group-item list-group-item-action">
+                    <i class="fas fa-life-ring me-2"></i>服务与支持
+                </a>
+                <a href="/admin/support" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tools me-2"></i>服务与技术资源
+                </a>
+                <a href="/admin/plugins" class="list-group-item list-group-item-action">
+                    <i class="fas fa-plug me-2"></i>系统插件
+                </a>
+                <a href="/admin/account" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user-cog me-2"></i>账户设置
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">编辑轮播图片</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 d-flex align-items-center">
+                        <img src="<%= item.image %>" alt="carousel" style="width: 240px; height: 120px; object-fit: cover;" class="rounded border me-3">
+                        <div class="text-muted small">当前预览</div>
+                    </div>
+                    <form action="/admin/carousel/resize/<%= item.id %>" method="POST" class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">标题(可选)</label>
+                            <input type="text" name="title" class="form-control" value="<%= item.title || '' %>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">说明(可选)</label>
+                            <input type="text" name="caption" class="form-control" value="<%= item.caption || '' %>">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">目标宽度 (px)</label>
+                            <input type="number" name="target_width" class="form-control" placeholder="如 1920">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">目标高度 (px)</label>
+                            <input type="number" name="target_height" class="form-control" placeholder="如 600">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">缩放百分比 (%)</label>
+                            <input type="number" name="scale_percent" class="form-control" placeholder="如 50">
+                        </div>
+                        <div class="col-md-12">
+                            <small class="text-muted">如填写宽高，将按该尺寸等比裁剪（居中）。不填则保留原始尺寸。</small>
+                        </div>
+                        <div class="col-md-12">
+                            <small class="text-muted">如填写缩放百分比，将按原图比例缩放。如 50 表示缩小为原来的一半。</small>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">保存修改</button>
+                            <a href="/admin/carousel" class="btn btn-secondary">返回列表</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

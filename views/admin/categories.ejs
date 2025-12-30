@@ -1,0 +1,186 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="list-group">
+                <a href="/admin/dashboard" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tachometer-alt me-2"></i>仪表盘
+                </a>
+                <a href="/admin/categories" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-tags me-2"></i>分类管理
+                </a>
+                <a href="/admin/contact" class="list-group-item list-group-item-action">
+                    <i class="fas fa-address-card me-2"></i>联系方式
+                </a>
+                <a href="/admin/about" class="list-group-item list-group-item-action">
+                    <i class="fas fa-info-circle me-2"></i>关于我们
+                </a>
+                <a href="/admin/plugins" class="list-group-item list-group-item-action">
+                    <i class="fas fa-plug me-2"></i>系统插件
+                </a>
+                <a href="/" target="_blank" class="list-group-item list-group-item-action">
+                    <i class="fas fa-external-link-alt me-2"></i>浏览前台
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">添加新分类</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/categories/add" method="POST" class="row g-3">
+                        <div class="col-md-5">
+                            <input type="text" name="name" class="form-control" placeholder="分类名称 (中文)" required>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" name="name_en" class="form-control" placeholder="Category Name (English)" required>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-success w-100">添加</button>
+                        </div>
+                    </form>
+                    <div class="mt-3">
+                        <a href="/admin/product/add" class="btn btn-primary"><i class="fas fa-plus me-2"></i>快速添加产品</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">现有分类列表</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>中文名称</th>
+                                <th>英文名称</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (categories.length > 0) { %>
+                                <% categories.forEach(function(cat) { %>
+                                    <tr>
+                                        <td><%= cat.id %></td>
+                                        <td><%= cat.name %></td>
+                                        <td><%= cat.name_en %></td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editCatModal" data-id="<%= cat.id %>" data-name="<%= cat.name %>" data-name-en="<%= cat.name_en %>">
+                                                编辑
+                                            </button>
+                                            <a href="/admin/categories/delete/<%= cat.id %>" class="btn btn-sm btn-danger" onclick="return confirm('确定要删除此分类吗？')">删除</a>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="4" class="text-center py-3">暂无分类</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal fade" id="editCatModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">编辑分类</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form id="editCatForm" method="POST">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">分类名称 (中文)</label>
+                                    <input type="text" name="name" id="editCatName" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Category Name (English)</label>
+                                    <input type="text" name="name_en" id="editCatNameEn" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                <button type="submit" class="btn btn-primary">保存</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">产品列表</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>图片</th>
+                                    <th>名称</th>
+                                    <th>分类</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (products && products.length > 0) { %>
+                                    <% products.forEach(function(product) { %>
+                                        <tr>
+                                            <td><%= product.id %></td>
+                                            <td>
+                                                <% if(product.image) { %>
+                                                    <img src="<%= product.image %>" alt="thumb" style="width: 50px; height: 50px; object-fit: cover;">
+                                                <% } else { %>
+                                                    <span class="text-muted">无图</span>
+                                                <% } %>
+                                            </td>
+                                            <td><%= product.name %></td>
+                                            <td><span class="badge bg-secondary"><%= product.category %></span></td>
+                                            <td>
+                                                <a href="/admin/product/edit/<%= product.id %>" class="btn btn-sm btn-primary me-2"><i class="fas fa-edit"></i></a>
+                                                <a href="/admin/product/delete/<%= product.id %>" class="btn btn-sm btn-danger" onclick="return confirm('确定要删除这个产品吗？')"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4">暂无产品，请添加。</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    const modalEl = document.getElementById('editCatModal');
+    const formEl = document.getElementById('editCatForm');
+    const nameEl = document.getElementById('editCatName');
+    const nameEnEl = document.getElementById('editCatNameEn');
+    modalEl?.addEventListener('show.bs.modal', (ev) => {
+        const btn = ev.relatedTarget;
+        if (!btn) return;
+        const id = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name') || '';
+        const nameEn = btn.getAttribute('data-name-en') || '';
+        nameEl.value = name;
+        nameEnEl.value = nameEn;
+        formEl.action = '/admin/categories/update/' + id;
+    });
+})();
+</script>
+
+<%- include('../partials/footer') %>

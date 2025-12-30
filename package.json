@@ -1,0 +1,31 @@
+{
+  "name": "ouma-machinery-website",
+  "version": "1.0.0",
+  "description": "Professional Machinery Enterprise Website with Admin CMS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "enterprise",
+    "machinery",
+    "cms",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vitalets/google-translate-api": "^9.2.1",
+    "async": "^3.2.6",
+    "bcryptjs": "^3.0.3",
+    "ejs": "^3.1.9",
+    "express": "^5.2.1",
+    "express-session": "^1.17.3",
+    "geoip-lite": "^1.4.10",
+    "multer": "^2.0.2",
+    "sequelize": "^6.32.1",
+    "sharp": "^0.34.5",
+    "sqlite3": "^5.1.6"
+  }
+}

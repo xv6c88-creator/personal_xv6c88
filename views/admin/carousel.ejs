@@ -1,0 +1,110 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="list-group">
+                <a href="/admin/dashboard" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tachometer-alt me-2"></i>仪表盘
+                </a>
+                <a href="/admin/categories" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tags me-2"></i>分类管理
+                </a>
+                <a href="/admin/contact" class="list-group-item list-group-item-action">
+                    <i class="fas fa-address-card me-2"></i>联系方式
+                </a>
+                <a href="/admin/carousel" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-images me-2"></i>首页轮播
+                </a>
+                <a href="/admin/about" class="list-group-item list-group-item-action">
+                    <i class="fas fa-info-circle me-2"></i>关于我们
+                </a>
+                <a href="/admin/plugins" class="list-group-item list-group-item-action">
+                    <i class="fas fa-plug me-2"></i>系统插件
+                </a>
+                <a href="/admin/account" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user-cog me-2"></i>账户设置
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">添加轮播图片</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/carousel/add" method="POST" enctype="multipart/form-data" class="row g-3">
+                        <div class="col-md-6">
+                            <input type="file" name="images" class="form-control" accept="image/*" multiple required>
+                            <small class="text-muted">支持多张上传；推荐尺寸：1920x600 或 1920x1080</small>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="title" class="form-control" placeholder="标题(可选)">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="caption" class="form-control" placeholder="说明(可选)">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" name="target_width" class="form-control" placeholder="目标宽度(px)">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" name="target_height" class="form-control" placeholder="目标高度(px)">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" name="scale_percent" class="form-control" placeholder="缩放百分比(%)">
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">如填写宽高，将按该尺寸等比裁剪（居中）。不填则保留原始尺寸。</small>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">如填写缩放百分比，将按原图比例缩放。如 50 表示缩小为原来的一半。</small>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-success">添加</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">轮播图片列表</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>预览</th>
+                                <th>标题</th>
+                                <th>说明</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (items.length > 0) { %>
+                                <% items.forEach(function(it) { %>
+                                    <tr>
+                                        <td><%= it.id %></td>
+                                        <td><img src="<%= it.image %>" alt="carousel" style="width: 120px; height: 60px; object-fit: cover;"></td>
+                                        <td><%= it.title || '-' %></td>
+                                        <td><%= it.caption || '-' %></td>
+                                        <td>
+                                            <a href="/admin/carousel/edit/<%= it.id %>" class="btn btn-sm btn-primary me-2">编辑尺寸</a>
+                                            <a href="/admin/carousel/delete/<%= it.id %>" class="btn btn-sm btn-danger" onclick="return confirm('确定要删除此图片吗？')">删除</a>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr><td colspan="5" class="text-center py-3">暂无图片</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

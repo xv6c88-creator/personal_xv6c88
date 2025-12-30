@@ -1,0 +1,57 @@
+<%- include('partials/header') %>
+
+<div class="bg-dark text-white py-5 mb-5">
+    <div class="container text-center">
+        <h1><%= t.contactContent.title %></h1>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <h3 class="mb-4"><%= lang === 'en' ? 'Contact Information' : '联系方式' %></h3>
+            <ul class="list-unstyled lead">
+                <li class="mb-3"><i class="fas fa-map-marker-alt text-primary me-3"></i> <%= lang === 'en' ? siteConfig.address_en : siteConfig.address_zh %></li>
+                <li class="mb-3"><i class="fas fa-phone text-primary me-3"></i> <%= siteConfig.phone %></li>
+                <li class="mb-3"><i class="fas fa-envelope text-primary me-3"></i> <%= siteConfig.email %></li>
+                <% if (siteConfig.whatsapp) { %>
+                <li class="mb-3"><i class="fab fa-whatsapp text-success me-3"></i> <a class="text-decoration-none" href="https://wa.me/<%= siteConfig.whatsapp.replace('+','') %>" target="_blank"><%= siteConfig.whatsapp %></a></li>
+                <% } %>
+                <li class="mb-3"><i class="fas fa-clock text-primary me-3"></i> <%= lang === 'en' ? siteConfig.work_hours_en : siteConfig.work_hours_zh %></li>
+            </ul>
+            <% if (siteConfig.whatsapp) { %>
+            <div class="mt-3">
+                <a href="https://wa.me/<%= siteConfig.whatsapp.replace('+','') %>" target="_blank" class="btn btn-success btn-lg">
+                    <i class="fab fa-whatsapp me-2"></i><%= t.contactViaWhatsApp %>
+                </a>
+            </div>
+            <% } %>
+        </div>
+        <div class="col-md-6">
+            <h3 class="mb-4"><%= t.contactContent.form.title %></h3>
+            <% if (typeof query !== 'undefined' && query.message_success) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i><%= lang === 'en' ? 'Message sent successfully.' : '留言已发送，我们会尽快联系您。' %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <% } %>
+            <form action="/contact/message" method="POST">
+                <div class="mb-3">
+                    <label class="form-label"><%= t.contactContent.form.name %></label>
+                    <input type="text" name="name" class="form-control" placeholder="<%= t.contactContent.form.placeholderName %>" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><%= t.contactContent.form.email %></label>
+                    <input type="email" name="email" class="form-control" placeholder="<%= t.contactContent.form.placeholderEmail %>" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><%= t.contactContent.form.message %></label>
+                    <textarea name="message" class="form-control" rows="5" placeholder="<%= t.contactContent.form.placeholderMsg %>" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary"><%= t.contactContent.form.submit %></button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

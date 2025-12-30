@@ -1,0 +1,95 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="list-group">
+                <a href="/admin/dashboard" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tachometer-alt me-2"></i>仪表盘
+                </a>
+                <a href="/admin/categories" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tags me-2"></i>分类管理
+                </a>
+                <a href="/admin/contact" class="list-group-item list-group-item-action">
+                    <i class="fas fa-address-card me-2"></i>联系方式
+                </a>
+                <a href="/admin/carousel" class="list-group-item list-group-item-action">
+                    <i class="fas fa-images me-2"></i>首页轮播
+                </a>
+                <a href="/admin/about" class="list-group-item list-group-item-action">
+                    <i class="fas fa-info-circle me-2"></i>关于我们
+                </a>
+                <a href="/admin/chat" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-comments me-2"></i>在线咨询
+                </a>
+                <a href="/admin/plugins" class="list-group-item list-group-item-action">
+                    <i class="fas fa-plug me-2"></i>系统插件
+                </a>
+                <a href="/admin/account" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user-cog me-2"></i>账户设置
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">会话列表</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <% if (sessions.length > 0) { %>
+                                <% sessions.forEach(function(s) { %>
+                                    <a class="list-group-item list-group-item-action <%= current && current.id === s.id ? 'active' : '' %>" href="/admin/chat/<%= s.id %>">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <div><strong><%= s.company || '未知公司' %></strong></div>
+                                                <div class="small text-muted"><%= s.interested_product || '-' %></div>
+                                            </div>
+                                            <span class="badge bg-secondary align-self-start"><%= s.status %></span>
+                                        </div>
+                                    </a>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="list-group-item text-center text-muted">暂无会话</div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">消息</h5>
+                        </div>
+                        <div class="card-body" style="height: 380px; overflow-y: auto;">
+                            <% if (current) { %>
+                                <% messages.forEach(function(m) { %>
+                                    <div class="d-flex mb-2 <%= m.sender === 'admin' ? 'justify-content-end' : 'justify-content-start' %>">
+                                        <div class="p-2 rounded <%= m.sender === 'admin' ? 'bg-primary text-white' : 'bg-light' %>">
+                                            <div class="small text-muted"><%= m.sender %></div>
+                                            <div><%= m.content %></div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="text-muted">请选择左侧会话</div>
+                            <% } %>
+                        </div>
+                        <% if (current) { %>
+                        <div class="card-footer">
+                            <form action="/admin/chat/<%= current.id %>/message" method="POST" class="d-flex">
+                                <input type="text" name="content" class="form-control me-2" placeholder="输入回复内容" required>
+                                <button class="btn btn-primary">发送</button>
+                            </form>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<%- include('../partials/footer') %>

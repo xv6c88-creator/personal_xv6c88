@@ -1,0 +1,76 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="list-group">
+                <a href="/admin/dashboard" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tachometer-alt me-2"></i>仪表盘
+                </a>
+                <a href="/admin/categories" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tags me-2"></i>分类管理
+                </a>
+                <a href="/admin/contact" class="list-group-item list-group-item-action">
+                    <i class="fas fa-address-card me-2"></i>联系方式
+                </a>
+                <a href="/admin/carousel" class="list-group-item list-group-item-action">
+                    <i class="fas fa-images me-2"></i>首页轮播
+                </a>
+                <a href="/admin/about" class="list-group-item list-group-item-action">
+                    <i class="fas fa-info-circle me-2"></i>关于我们
+                </a>
+                <a href="/admin/services" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-life-ring me-2"></i>服务与支持
+                </a>
+                <a href="/admin/plugins" class="list-group-item list-group-item-action">
+                    <i class="fas fa-plug me-2"></i>系统插件
+                </a>
+                <a href="/admin/account" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user-cog me-2"></i>账户设置
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">服务与支持管理</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/services" method="POST">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-3 text-secondary">中文</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">标题</label>
+                                    <input type="text" name="services_title_zh" class="form-control" value="<%= (config.services_title_zh || '') %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">内容</label>
+                                    <textarea name="services_content_zh" class="form-control" rows="6"><%= (config.services_content_zh || '') %></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="mb-3 text-secondary">English</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Title</label>
+                                    <input type="text" name="services_title_en" class="form-control" value="<%= (config.services_title_en || '') %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Content</label>
+                                    <textarea name="services_content_en" class="form-control" rows="6"><%= (config.services_content_en || '') %></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary btn-lg">保存更改</button>
+                            <a href="/admin/dashboard" class="btn btn-secondary">取消</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

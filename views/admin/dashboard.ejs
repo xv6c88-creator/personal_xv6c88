@@ -1,0 +1,187 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="list-group">
+                <a href="/admin/dashboard" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-tachometer-alt me-2"></i>仪表盘
+                </a>
+                <a href="/admin/categories" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tags me-2"></i>分类管理
+                </a>
+                <a href="/admin/contact" class="list-group-item list-group-item-action">
+                    <i class="fas fa-address-card me-2"></i>联系方式
+                </a>
+                <a href="/" target="_blank" class="list-group-item list-group-item-action">
+                    <i class="fas fa-external-link-alt me-2"></i>浏览前台
+                </a>
+                <a href="/admin/services" class="list-group-item list-group-item-action">
+                    <i class="fas fa-life-ring me-2"></i>服务与支持
+                </a>
+                <a href="/admin/support" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tools me-2"></i>服务与技术资源
+                </a>
+                <a href="/admin/carousel" class="list-group-item list-group-item-action">
+                    <i class="fas fa-images me-2"></i>首页轮播
+                </a>
+                <a href="/admin/plugins" class="list-group-item list-group-item-action">
+                    <i class="fas fa-plug me-2"></i>系统插件
+                </a>
+                <a href="/admin/account" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user-cog me-2"></i>账户设置
+                </a>
+            </div>
+        </div>
+
+            <!-- Server Status Widget -->
+            <div class="card mt-4 shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-server me-2"></i>服务器状态
+                </div>
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        运行时长
+                        <span class="badge bg-secondary rounded-pill"><%= serverStats.uptime %></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        内存使用
+                        <span class="badge bg-secondary rounded-pill"><%= serverStats.freemem %> / <%= serverStats.totalmem %></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Node版本
+                        <span class="badge bg-secondary rounded-pill"><%= serverStats.nodeVersion %></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        系统平台
+                        <span class="badge bg-secondary rounded-pill"><%= serverStats.platform %></span>
+                    </li>
+                </ul>
+                <div class="card-body">
+                    <form action="/admin/system/update-plugins" method="POST">
+                        <button class="btn btn-sm btn-outline-light"><i class="fas fa-sync me-1"></i>更新网站插件</button>
+                    </form>
+                    <% if (typeof query !== 'undefined' && query.plugins_updated) { %>
+                        <div class="alert alert-success mt-2 py-1 mb-0">插件更新任务已触发</div>
+                    <% } %>
+                    <div class="mt-2">
+                        <a href="/admin/plugins" class="btn btn-sm btn-outline-warning"><i class="fas fa-plug me-1"></i>查看插件状态</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-4 shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <i class="fas fa-database me-2"></i>数据库状态
+                </div>
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        连接状态
+                        <span class="badge rounded-pill <%= dbStats.status === 'online' ? 'bg-success' : (dbStats.status === 'error' ? 'bg-danger' : 'bg-secondary') %>"><%= dbStats.status %></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        类型
+                        <span class="badge bg-secondary rounded-pill"><%= dbStats.dialect || '-' %></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        存储文件
+                        <span class="text-truncate" style="max-width: 60%"><%= dbStats.storage || '-' %></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        文件大小
+                        <span class="badge bg-secondary rounded-pill"><%= dbStats.size || '-' %></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        表数量
+                        <span class="badge bg-secondary rounded-pill"><%= dbStats.tables %></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        最后更新
+                        <span class="badge bg-secondary rounded-pill"><%= dbStats.lastUpdated || '-' %></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Access Logs -->
+            <h4 class="mb-3"><i class="fas fa-history me-2"></i>最近访客记录</h4>
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped mb-0 text-muted" style="font-size: 0.9rem;">
+                            <thead>
+                                <tr>
+                                    <th>时间</th>
+                                    <th>IP地址</th>
+                                    <th>地区</th>
+                                    <th>访问路径</th>
+                                    <th>方式</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (accessLogs.length > 0) { %>
+                                    <% accessLogs.forEach(function(log) { %>
+                                        <tr>
+                                            <td><%= new Date(log.timestamp).toLocaleString() %></td>
+                                            <td><%= log.ip %></td>
+                                            <td>
+                                                <% if(log.country) { %>
+                                                    <span class="badge bg-info text-dark"><%= log.country %> <%= log.city %></span>
+                                                <% } else { %>
+                                                    <span class="text-muted">-</span>
+                                                <% } %>
+                                            </td>
+                                            <td><%= log.path %></td>
+                                            <td><%= log.method %></td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="text-center py-2">暂无访问记录</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap/dist/css/jsvectormap.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/js/jsvectormap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const visitors = <%- JSON.stringify(typeof visitorMap !== 'undefined' ? visitorMap : {}) %>;
+        
+        new jsVectorMap({
+            selector: '#world-map',
+            map: 'world',
+            visualizeData: {
+                scale: ['#d1e7dd', '#0f5132'],
+                values: visitors
+            },
+            regionStyle: {
+                initial: {
+                    fill: '#e9ecef'
+                },
+                hover: {
+                    fill: '#ced4da'
+                }
+            },
+            onRegionTooltipShow(event, tooltip, code) {
+                const count = visitors[code] || 0;
+                if (count > 0) {
+                    tooltip.text(tooltip.text() + ` (${count} 访客)`);
+                }
+            }
+        });
+    });
+</script>

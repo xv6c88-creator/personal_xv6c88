@@ -1,0 +1,114 @@
+<%- include('partials/header') %>
+
+<!-- Carousel -->
+<% if (typeof carouselImages !== 'undefined' && carouselImages.length > 0) { %>
+<div id="homeCarousel" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-interval="15000" data-bs-pause="false">
+    <div class="carousel-indicators">
+        <% carouselImages.forEach(function(img, idx) { %>
+            <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="<%= idx %>" class="<%= idx === 0 ? 'active' : '' %>"></button>
+        <% }); %>
+    </div>
+    <div class="carousel-inner">
+        <% carouselImages.forEach(function(img, idx) { %>
+            <div class="carousel-item <%= idx === 0 ? 'active' : '' %>">
+                <img src="<%= img.image %>" class="d-block w-100" alt="<%= img.title || 'slide' %>" style="height: 600px; object-fit: cover;">
+                <% if (img.title || img.caption) { %>
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+                    <h5><%= img.title || '' %></h5>
+                    <p><%= img.caption || '' %></p>
+                </div>
+                <% } %>
+            </div>
+        <% }); %>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+<% } %>
+
+<!-- Hero Section -->
+<% var heroBg = (typeof carouselImages !== 'undefined' && carouselImages.length > 0) ? carouselImages[0].image : '/images/1766315748565.jpeg'; %>
+<div class="bg-primary text-white py-5 mb-5" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('<%= heroBg %>') no-repeat center center; background-size: cover; min-height: 400px; display: flex; align-items: center;">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold"><%= t.heroTitle %></h1>
+        <p class="lead mb-4"><%= t.heroDesc %></p>
+        <a href="/products" class="btn btn-warning btn-lg px-4"><%= t.viewProducts %></a>
+        <a href="/contact" class="btn btn-outline-light btn-lg px-4 ms-2"><%= t.contactUs %></a>
+    </div>
+</div>
+
+<!-- Features -->
+<div class="container mb-5">
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm p-4">
+                <div class="card-body">
+                    <i class="fas fa-microchip fa-3x text-primary mb-3"></i>
+                    <h4 class="card-title"><%= t.features.smart %></h4>
+                    <p class="card-text"><%= t.features.smartDesc %></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm p-4">
+                <div class="card-body">
+                    <i class="fas fa-industry fa-3x text-primary mb-3"></i>
+                    <h4 class="card-title"><%= t.features.durable %></h4>
+                    <p class="card-text"><%= t.features.durableDesc %></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm p-4">
+                <div class="card-body">
+                    <i class="fas fa-tools fa-3x text-primary mb-3"></i>
+                    <h4 class="card-title"><%= t.features.service %></h4>
+                    <p class="card-text"><%= t.features.serviceDesc %></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Products -->
+<div class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5"><%= t.featuredProducts %></h2>
+        <div class="row">
+            <% if (products.length > 0) { %>
+                <% products.forEach(function(product) { %>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="bg-secondary d-flex align-items-center justify-content-center" style="height: 200px; overflow: hidden;">
+                                <% if(product.image) { %>
+                                    <img src="<%= product.image %>" class="card-img-top" alt="<%= l(product, 'name') %>" style="max-height: 100%; width: auto;">
+                                <% } else { %>
+                                    <i class="fas fa-image fa-3x text-white-50"></i>
+                                <% } %>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title"><%= l(product, 'name') %></h5>
+                                <% var _d = l(product, 'description') || ''; var _p = _d.replace(/<[^>]*>/g, ''); %>
+                                <p class="card-text text-muted"><%= _p.length > 80 ? (_p.substring(0, 80) + '...') : _p %></p>
+                                <a href="/products/<%= product.id %>" class="btn btn-outline-primary stretched-link"><%= t.viewDetails %></a>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="col-12 text-center">
+                    <p><%= t.noData %></p>
+                </div>
+            <% } %>
+        </div>
+        <div class="text-center mt-4">
+            <a href="/products" class="btn btn-primary"><%= t.allProducts %></a>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

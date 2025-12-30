@@ -1,0 +1,122 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="list-group">
+                <a href="/admin/dashboard" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tachometer-alt me-2"></i>仪表盘
+                </a>
+                <a href="/admin/categories" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tags me-2"></i>分类管理
+                </a>
+                <a href="/admin/contact" class="list-group-item list-group-item-action">
+                    <i class="fas fa-address-card me-2"></i>联系方式
+                </a>
+                <a href="/admin/carousel" class="list-group-item list-group-item-action">
+                    <i class="fas fa-images me-2"></i>首页轮播
+                </a>
+                <a href="/admin/about" class="list-group-item list-group-item-action">
+                    <i class="fas fa-info-circle me-2"></i>关于我们
+                </a>
+                <a href="/admin/services" class="list-group-item list-group-item-action">
+                    <i class="fas fa-life-ring me-2"></i>服务与支持
+                </a>
+                <a href="/admin/support" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-tools me-2"></i>服务与技术资源
+                </a>
+                <a href="/admin/plugins" class="list-group-item list-group-item-action">
+                    <i class="fas fa-plug me-2"></i>系统插件
+                </a>
+                <a href="/admin/account" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user-cog me-2"></i>账户设置
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">上传资源</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/support/add" method="POST" enctype="multipart/form-data" class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">资源类型</label>
+                            <select name="type" class="form-select" required>
+                                <option value="manual">产品说明书 (PDF)</option>
+                                <option value="video">演示视频 (mp4等)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="title_zh" class="form-control" placeholder="标题(中文)">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="title_en" class="form-control" placeholder="Title (English)">
+                        </div>
+                        <div class="col-md-6">
+                            <textarea name="description_zh" class="form-control" rows="3" placeholder="描述(中文)"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <textarea name="description_en" class="form-control" rows="3" placeholder="Description (English)"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">上传文件</label>
+                            <input type="file" name="file" class="form-control" accept=".pdf,video/*">
+                            <small class="text-muted">说明书上传PDF，视频上传mp4等常见格式。</small>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-success">上传</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">资源列表</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>类型</th>
+                                <th>标题</th>
+                                <th>预览/下载</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (resources.length > 0) { %>
+                                <% resources.forEach(function(r) { %>
+                                    <tr>
+                                        <td><%= r.id %></td>
+                                        <td><%= r.type %></td>
+                                        <td><%= r.title_zh || r.title_en || '-' %></td>
+                                        <td>
+                                            <% if (r.type === 'manual' && r.file_path) { %>
+                                                <a href="<%= r.file_path %>" target="_blank" class="btn btn-sm btn-outline-primary">下载PDF</a>
+                                            <% } else if (r.type === 'video' && r.video_path) { %>
+                                                <video src="<%= r.video_path %>" style="width: 160px; height: 90px;" controls></video>
+                                            <% } else { %>
+                                                -
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <a href="/admin/support/delete/<%= r.id %>" class="btn btn-sm btn-danger" onclick="return confirm('确定要删除此资源吗？')">删除</a>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr><td colspan="5" class="text-center py-3">暂无资源</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

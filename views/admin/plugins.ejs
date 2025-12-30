@@ -1,0 +1,211 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="list-group">
+                <a href="/admin/dashboard" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tachometer-alt me-2"></i>仪表盘
+                </a>
+                <a href="/admin/categories" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tags me-2"></i>分类管理
+                </a>
+                <a href="/admin/contact" class="list-group-item list-group-item-action">
+                    <i class="fas fa-address-card me-2"></i>联系方式
+                </a>
+                <a href="/admin/carousel" class="list-group-item list-group-item-action">
+                    <i class="fas fa-images me-2"></i>首页轮播
+                </a>
+                <a href="/admin/plugins" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-plug me-2"></i>系统插件
+                </a>
+                <a href="/admin/account" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user-cog me-2"></i>账户设置
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="mb-0">系统插件管理</h3>
+                <form action="/admin/plugins/update-all" method="POST">
+                    <button class="btn btn-primary"><i class="fas fa-sync me-2"></i>更新全部</button>
+                </form>
+            </div>
+            <% if (updated) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    插件更新任务已触发
+                    <% if (updatedPkg) { %>
+                        ：<span class="badge bg-success"><%= updatedPkg %></span>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-list me-2"></i>已安装依赖
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th>名称</th>
+                                    <th>当前版本</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% const entries = Object.entries(deps || {}); %>
+                                <% if (entries.length > 0) { %>
+                                    <% entries.forEach(function([name, version]) { 
+                                        const o = outdated[name] || null;
+                                        const badge = o ? 'bg-warning text-dark' : 'bg-success';
+                                        const statusText = o ? ('可更新到 ' + (o.wanted || o.latest || 'latest')) : '最新';
+                                    %>
+                                    <tr>
+                                        <td><span class="fw-semibold"><%= name %></span></td>
+                                        <td><code><%= version %></code></td>
+                                        <td>
+                                            <span class="badge <%= badge %>"><%= statusText %></span>
+                                            <% if (o) { %>
+                                                <span class="text-muted ms-2">当前: <%= o.current %></span>
+                                                <span class="text-muted ms-2">最新: <%= o.latest %></span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (o) { %>
+                                            <form action="/admin/plugins/update/<%= name %>" method="POST">
+                                                <button class="btn btn-sm btn-outline-primary"><i class="fas fa-arrow-up me-1"></i>更新到最新</button>
+                                            </form>
+                                            <% } else { %>
+                                            <span class="text-muted">-</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr><td colspan="4" class="text-center py-4">暂无依赖</td></tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <i class="fas fa-tools me-2"></i>开发依赖
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>名称</th>
+                                    <th>当前版本</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% const devEntries = Object.entries(devDeps || {}); %>
+                                <% if (devEntries.length > 0) { %>
+                                    <% devEntries.forEach(function([name, version]) {
+                                        const o = outdated[name] || null;
+                                        const badge = o ? 'bg-warning text-dark' : 'bg-success';
+                                        const statusText = o ? ('可更新到 ' + (o.wanted || o.latest || 'latest')) : '最新';
+                                    %>
+                                    <tr>
+                                        <td><%= name %></td>
+                                        <td><code><%= version %></code></td>
+                                        <td>
+                                            <span class="badge <%= badge %>"><%= statusText %></span>
+                                            <% if (o) { %>
+                                                <span class="text-muted ms-2">当前: <%= o.current %></span>
+                                                <span class="text-muted ms-2">最新: <%= o.latest %></span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (o) { %>
+                                            <form action="/admin/plugins/update/<%= name %>" method="POST">
+                                                <button class="btn btn-sm btn-outline-primary"><i class="fas fa-arrow-up me-1"></i>更新到最新</button>
+                                            </form>
+                                            <% } else { %>
+                                            <span class="text-muted">-</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr><td colspan="4" class="text-center py-3">暂无开发依赖</td></tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-danger text-white">
+                    <i class="fas fa-shield-alt me-2"></i>安全审计
+                </div>
+                <div class="card-body">
+                    <% if (audit && audit.vulnerabilities) { %>
+                        <div class="row g-3">
+                            <div class="col-md-2">
+                                <div class="card text-center border-0">
+                                    <div class="card-body">
+                                        <div class="fw-semibold">低</div>
+                                        <div class="display-6"><%= audit.vulnerabilities.low || 0 %></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card text-center border-0">
+                                    <div class="card-body">
+                                        <div class="fw-semibold">中</div>
+                                        <div class="display-6"><%= audit.vulnerabilities.moderate || 0 %></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card text-center border-0">
+                                    <div class="card-body">
+                                        <div class="fw-semibold">高</div>
+                                        <div class="display-6"><%= audit.vulnerabilities.high || 0 %></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card text-center border-0">
+                                    <div class="card-body">
+                                        <div class="fw-semibold">严重</div>
+                                        <div class="display-6"><%= audit.vulnerabilities.critical || 0 %></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <div>
+                                    <div class="mb-2">总计：<span class="badge bg-dark"><%= audit.total %></span></div>
+                                    <form action="/admin/plugins/audit-fix" method="POST">
+                                        <button class="btn btn-danger"><i class="fas fa-wrench me-2"></i>尝试自动修复</button>
+                                    </form>
+                                    <% if (auditFixed) { %>
+                                        <div class="alert alert-success mt-2 py-1 mb-0">已触发安全修复</div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <div class="text-muted">无法获取审计信息</div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
