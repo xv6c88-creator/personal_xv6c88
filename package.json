@@ -1,11 +1,27 @@
 {
-  "name": "ouma-machinery-website",
+  "name": "my-ejs-site",
   "version": "1.0.0",
   "description": "Professional Machinery Enterprise Website with Admin CMS",
   "main": "server.js",
+  "scripts": {{
+  "name": "my-ejs-site",
+  "version": "1.0.0",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "ejs": "^3.1.10"
+  }
+}
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "ejs": "^3.1.10"
   },
   "keywords": [
     "enterprise",
