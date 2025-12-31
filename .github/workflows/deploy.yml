@@ -43,8 +43,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }} 
           publish_dir: ./dist # ⬅️ 这里改成你生成的文件夹名
 
-
-on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
