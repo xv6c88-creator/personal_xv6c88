@@ -31,12 +31,13 @@
     "sequelize": "^6.32.1",
     "sharp": "^0.34.5",
    {
-  "scripts": {
-    "build": "npm install sqlite3 && next build"
+  "dependencies": {
+    "sqlite3": "^5.1.7"
   }
 }
   }
 }  
+
 
 
 
