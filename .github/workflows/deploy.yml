@@ -42,6 +42,7 @@ jobs:
           # 如果在 public 文件夹里，就写 public
           github_token: ${{ secrets.GITHUB_TOKEN }} 
           publish_dir: ./dist # ⬅️ 这里改成你生成的文件夹名
+
 name: Deploy to GitHub Pages
 
 on:
