@@ -30,14 +30,12 @@
     "multer": "^2.0.2",
     "sequelize": "^6.32.1",
     "sharp": "^0.34.5",
- {
-    "dependencies": {
     "sqlite3": "5.1.7"
   }
 }
   
-  }
-}  
+  
+
 
 
 
