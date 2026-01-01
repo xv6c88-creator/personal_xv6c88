@@ -30,12 +30,14 @@
     "multer": "^2.0.2",
     "sequelize": "^6.32.1",
     "sharp": "^0.34.5"
+    "build": "npm install sqlite3 && node build.js"
   }
 }
   
 
   
   
+
 
 
 
