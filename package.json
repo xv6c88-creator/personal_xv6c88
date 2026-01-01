@@ -29,16 +29,14 @@
     "geoip-lite": "^1.4.10",
     "multer": "^2.0.2",
     "sequelize": "^6.32.1",
-    "sharp": "^0.34.5",
-    {
-  "scripts": {
-    "build": "npm install sqlite3 && next build"
-  }
-}
+    "sharp": "^0.34.5"
   }
 }
   
+
   
+  
+
 
 
 
