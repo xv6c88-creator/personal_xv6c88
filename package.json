@@ -1,5 +1,5 @@
 {
-  "name": "my-ejs-site",
+  "name": "my-ejs",
   "version": "1.0.0",
   "description": "A simple static website",
   "main": "server.js",
@@ -34,5 +34,6 @@
   }
 }
   
+
 
 
